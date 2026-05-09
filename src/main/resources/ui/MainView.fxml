@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.onlineservise.ui.MainController">
+
+    <top>
+        <HBox spacing="10" style="-fx-padding: 10;">
+
+            <Button text="Load Clients"
+                    onAction="#loadClients"/>
+
+            <Button text="Add Client"
+                    onAction="#addClient"/>
+
+            <Label fx:id="statusLabel"
+                   text="Ready"/>
+        </HBox>
+    </top>
+
+    <center>
+
+        <TableView fx:id="ordersTable">
+
+            <columns>
+
+                <TableColumn fx:id="idColumn"
+                             text="ID"
+                             prefWidth="60"/>
+
+                <TableColumn fx:id="clientColumn"
+                             text="Client"
+                             prefWidth="180"/>
+
+                <TableColumn fx:id="phoneColumn"
+                             text="Phone"
+                             prefWidth="160"/>
+
+                <TableColumn fx:id="serviceColumn"
+                             text="Service"
+                             prefWidth="220"/>
+
+                <TableColumn fx:id="masterColumn"
+                             text="Master"
+                             prefWidth="180"/>
+
+                <TableColumn fx:id="statusColumn"
+                             text="Status"
+                             prefWidth="140"/>
+
+            </columns>
+
+        </TableView>
+
+    </center>
+
+</BorderPane>

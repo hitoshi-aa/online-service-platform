@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+  fx:controller="com.onlineservise.ui.LoginController"
+  alignment="CENTER"
+  spacing="15"
+  style="-fx-padding: 30;">
+
+    <Label text="Online Service Platform"
+      style="-fx-font-size: 24px;" />
+
+    <ComboBox fx:id="roleBox"
+      prefWidth="250" />
+
+    <TextField fx:id="nameField"
+      promptText="Enter login or master name"
+      prefWidth="250" />
+
+    <PasswordField fx:id="passwordField"
+      promptText="Enter password"
+      prefWidth="250" />
+
+    <Button text="Login"
+      onAction="#login"
+      prefWidth="250" />
+
+</VBox>
