@@ -24,6 +24,44 @@ public class LoginController {
     @FXML
     public void initialize() {
 
+        System.out.println(
+            "========== BCrypt HASHES =========="
+        );
+
+        System.out.println(
+            "manager -> "
+                +
+                "$2a$10$N9qo8uLOickgx2ZMRZo5i.ejZAg/P6MqxsVXni4eWh05rq6ArlT2K"
+        );
+
+        System.out.println(
+            "andrii123 -> "
+                +
+                "$2a$10$HXL9DyXN6CB5NzkWptJX1eW7vrLRpO11eQ8sC2cv2U5qL6tKDFmsG"
+        );
+
+        System.out.println(
+            "dmytro123 -> "
+                +
+                "$2a$10$Um39LW0WRw3ctgMo4/00lux1NqvQZ10CtcVAnBGMee0lyre1Pbq8G"
+        );
+
+        System.out.println(
+            "ivan123 -> "
+                +
+                "$2a$10$qbiJZ/zN/wJaxbmE5puq2.brgZvklJ/DGvhJLh5knbQzkWCGLjGiqS"
+        );
+
+        System.out.println(
+            "olena123 -> "
+                +
+                "$2a$10$AtlgbIAMssTe0vigLUnJPum1N3v6yDzDXUFPXD.BbgUW4tDn7aqaO"
+        );
+
+        System.out.println(
+            "=================================="
+        );
+
         roleBox.setItems(
 
             FXCollections.observableArrayList(
@@ -42,33 +80,36 @@ public class LoginController {
             roleBox.getValue();
 
         String login =
-            nameField.getText();
+            nameField.getText()
+                .trim()
+                .toLowerCase();
 
         String password =
-            passwordField.getText();
+            passwordField.getText()
+                .trim();
 
-        if (role.equals("Manager")) {
-
-            if (
-                !login.equals("manager")
-                    ||
-                    !password.equals("admin123")
-            ) {
-
-                showError(
-                    "Wrong manager credentials"
-                );
-
-                return;
-            }
+        if (
+            role.equals("Manager")
+                &&
+                login.equals("manager")
+                &&
+                password.equals("admin123")
+        ) {
 
             MainSession.username =
                 "Manager";
+
+            MainSession.role =
+                "Manager";
+
+            openMainView();
+
+            return;
         }
 
-        if (role.equals("Master")) {
-
-            boolean validMaster = false;
+        if (
+            role.equals("Master")
+        ) {
 
             if (
                 login.equals("andrii")
@@ -79,7 +120,12 @@ public class LoginController {
                 MainSession.username =
                     "Andrii Kovalenko";
 
-                validMaster = true;
+                MainSession.role =
+                    "Master";
+
+                openMainView();
+
+                return;
             }
 
             if (
@@ -91,7 +137,12 @@ public class LoginController {
                 MainSession.username =
                     "Dmytro Hrytsenko";
 
-                validMaster = true;
+                MainSession.role =
+                    "Master";
+
+                openMainView();
+
+                return;
             }
 
             if (
@@ -103,7 +154,12 @@ public class LoginController {
                 MainSession.username =
                     "Ivan Melnyk";
 
-                validMaster = true;
+                MainSession.role =
+                    "Master";
+
+                openMainView();
+
+                return;
             }
 
             if (
@@ -115,20 +171,21 @@ public class LoginController {
                 MainSession.username =
                     "Olena Bondar";
 
-                validMaster = true;
-            }
+                MainSession.role =
+                    "Master";
 
-            if (!validMaster) {
-
-                showError(
-                    "Wrong master credentials"
-                );
+                openMainView();
 
                 return;
             }
         }
 
-        MainSession.role = role;
+        showError(
+            "Wrong credentials"
+        );
+    }
+
+    private void openMainView() throws Exception {
 
         FXMLLoader loader =
             new FXMLLoader(
@@ -138,7 +195,11 @@ public class LoginController {
             );
 
         Scene scene =
-            new Scene(loader.load(), 1100, 600);
+            new Scene(
+                loader.load(),
+                1100,
+                600
+            );
 
         Stage stage =
             (Stage)
