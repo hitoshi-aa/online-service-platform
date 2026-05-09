@@ -1,9 +1,14 @@
 package com.onlineservise.repository;
 
 import com.onlineservise.entity.Master;
-import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.List;
+import java.util.Optional;
 
-public interface MasterRepository
-        extends JpaRepository<Master, Long> {
-
+public interface MasterRepository {
+    List<Master> findAll();
+    Optional<Master> findById(Long id);
+    Optional<Master> findByLogin(String login);
+    Master save(Master master);
+    void update(Master master);
+    void deleteById(Long id);
 }

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.onlineservise.ui.ClientController"
+            stylesheets="@style.css">
+    <top>
+        <Label text="Client List" style="-fx-font-size: 18px; -fx-padding: 10;"/>
+    </top>
+    <center>
+        <TableView fx:id="clientTable">
+            <columns>
+                <TableColumn fx:id="nameColumn" text="Name" prefWidth="200"/>
+                <TableColumn fx:id="phoneColumn" text="Phone" prefWidth="200"/>
+            </columns>
+        </TableView>
+    </center>
+    <bottom>
+        <Label fx:id="statusLabel" style="-fx-padding: 5;"/>
+    </bottom>
+</BorderPane>

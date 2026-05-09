@@ -1,18 +1,14 @@
 package com.onlineservise.entity;
 
-import jakarta.persistence.*;
-
-@Entity
-@Table(name = "master")
 public class Master {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
 
     private String specialization;
+
+    private String login;
 
     private String password;
 
@@ -20,28 +16,36 @@ public class Master {
         return id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getSpecialization() {
-        return specialization;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
+    public String getSpecialization() {
+        return specialization;
+    }
+
     public void setSpecialization(String specialization) {
         this.specialization = specialization;
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public void setPassword(String password) {

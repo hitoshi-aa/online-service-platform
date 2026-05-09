@@ -1,250 +1,261 @@
 package com.onlineservise.ui;
 
-import com.onlineservise.entity.Client;
-import com.onlineservise.repository.ClientRepository;
+import com.onlineservise.dto.ClientDTO;
+import com.onlineservise.dto.ServiceOrderDTO;
+import com.onlineservise.service.ClientService;
+import com.onlineservise.service.ServiceOrderService;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MainController {
 
     @FXML
-    private TableView<OrderData> ordersTable;
+    private TableView<ServiceOrderDTO> ordersTable;
 
     @FXML
-    private TableColumn<OrderData, Integer> idColumn;
+    private TableColumn<ServiceOrderDTO, Long> idColumn;
 
     @FXML
-    private TableColumn<OrderData, String> clientColumn;
+    private TableColumn<ServiceOrderDTO, String> clientColumn;
 
     @FXML
-    private TableColumn<OrderData, String> phoneColumn;
+    private TableColumn<ServiceOrderDTO, String> phoneColumn;
 
     @FXML
-    private TableColumn<OrderData, String> serviceColumn;
+    private TableColumn<ServiceOrderDTO, String> serviceColumn;
 
     @FXML
-    private TableColumn<OrderData, String> masterColumn;
+    private TableColumn<ServiceOrderDTO, String> masterColumn;
 
     @FXML
-    private TableColumn<OrderData, String> statusColumn;
+    private TableColumn<ServiceOrderDTO, String> statusColumn;
 
     @FXML
     private Label statusLabel;
 
-    private final ObservableList<OrderData> clients =
-        FXCollections.observableArrayList();
+    @FXML
+    private TextField searchField;
 
-    private final ClientRepository clientRepository =
-        SpringContext
-            .getContext()
-            .getBean(ClientRepository.class);
+    private final ObservableList<ServiceOrderDTO> orderList = FXCollections.observableArrayList();
+
+    private ServiceOrderService orderService;
+    private ClientService clientService;
 
     @FXML
     public void initialize() {
+        orderService = SpringContext.getContext().getBean(ServiceOrderService.class);
+        clientService = SpringContext.getContext().getBean(ClientService.class);
 
-        idColumn.setCellValueFactory(
-            new PropertyValueFactory<>("id")
+        int count = clientService.getAllClients().size();
+        System.out.println("[DEBUG] Кількість клієнтів у Java: " + count);
+
+        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+        
+        clientColumn.setCellValueFactory(cellData -> 
+            new javafx.beans.property.SimpleStringProperty(
+                cellData.getValue().getClient() != null ? cellData.getValue().getClient().getName() : ""
+            )
         );
 
-        clientColumn.setCellValueFactory(
-            new PropertyValueFactory<>("client")
+        phoneColumn.setCellValueFactory(cellData -> 
+            new javafx.beans.property.SimpleStringProperty(
+                cellData.getValue().getClient() != null ? cellData.getValue().getClient().getPhone() : ""
+            )
         );
 
-        phoneColumn.setCellValueFactory(
-            new PropertyValueFactory<>("phone")
+        serviceColumn.setCellValueFactory(cellData -> 
+            new javafx.beans.property.SimpleStringProperty(
+                cellData.getValue().getServices() != null ? 
+                cellData.getValue().getServices().stream().map(s -> s.getName()).collect(Collectors.joining(", ")) : ""
+            )
         );
 
-        serviceColumn.setCellValueFactory(
-            new PropertyValueFactory<>("service")
+        masterColumn.setCellValueFactory(cellData -> 
+            new javafx.beans.property.SimpleStringProperty(
+                cellData.getValue().getMaster() != null ? cellData.getValue().getMaster().getName() : ""
+            )
         );
 
-        masterColumn.setCellValueFactory(
-            new PropertyValueFactory<>("master")
+        statusColumn.setCellValueFactory(cellData -> 
+            new javafx.beans.property.SimpleStringProperty(
+                cellData.getValue().getStatus() != null ? cellData.getValue().getStatus() : "Waiting"
+            )
         );
 
-        statusColumn.setCellValueFactory(
-            new PropertyValueFactory<>("status")
-        );
-
-        ordersTable.setItems(clients);
-
-        statusLabel.setText("System ready");
+        ordersTable.setItems(orderList);
+        statusLabel.setText("Клієнтів знайдено: " + count);
+        
+        loadOrders();
     }
 
     @FXML
-    public void loadClients() {
-
-        clients.clear();
-
-        List<Client> dbClients =
-            clientRepository.findAll();
-
-        String[] services = {
-
-            "Windows Installation",
-            "Laptop Diagnostics",
-            "PC Cleaning",
-            "SSD Upgrade",
-            "Data Recovery",
-            "Router Configuration"
-        };
-
-        String[] masters = {
-
-            "Andrii Kovalenko",
-            "Dmytro Hrytsenko",
-            "Ivan Melnyk",
-            "Olena Bondar"
-        };
-
-        String[] statuses = {
-
-            "Completed",
-            "In Progress",
-            "Waiting"
-        };
-
-        for (Client client : dbClients) {
-
-            String randomService =
-                services[
-                    (int)(Math.random() * services.length)
-                    ];
-
-            String master =
-                masters[
-                    (int)(Math.random() * masters.length)
-                    ];
-
-            String randomStatus =
-                statuses[
-                    (int)(Math.random() * statuses.length)
-                    ];
-
-            if (
-                MainSession.role.equals("Master")
-                    &&
-                    !master.equals(MainSession.username)
-            ) {
-
-                continue;
+    public void loadOrders() {
+        statusLabel.setText("Loading...");
+        Task<List<ServiceOrderDTO>> loadTask = new Task<>() {
+            @Override
+            protected List<ServiceOrderDTO> call() {
+                return orderService.getAllOrders();
             }
+        };
 
-            clients.add(
+        loadTask.setOnSucceeded(event -> {
+            List<ServiceOrderDTO> allOrders = loadTask.getValue();
+            if (MainSession.role.equals("Master")) {
+                allOrders = allOrders.stream()
+                        .filter(o -> o.getMaster() != null && o.getMaster().getName().equals(MainSession.username))
+                        .collect(Collectors.toList());
+            }
+            orderList.setAll(allOrders);
+            statusLabel.setText(MainSession.role + " mode: orders loaded");
+        });
 
-                new OrderData(
-                    client.getId().intValue(),
-                    client.getName(),
-                    client.getPhone(),
-                    randomService,
-                    master,
-                    randomStatus
-                )
-            );
+        loadTask.setOnFailed(event -> {
+            showError("Failed to load orders: " + loadTask.getException().getMessage());
+            statusLabel.setText("Error loading orders");
+        });
+
+        new Thread(loadTask).start();
+    }
+
+    @FXML
+    public void searchOrders() {
+        String query = searchField.getText().toLowerCase().trim();
+        if (query.isEmpty()) {
+            loadOrders();
+            return;
         }
 
-        ordersTable.refresh();
-
-        if (MainSession.role.equals("Manager")) {
-
-            statusLabel.setText(
-                "Manager mode: all clients loaded"
-            );
-        }
-
-        else {
-
-            statusLabel.setText(
-                "Master mode: only your orders loaded"
-            );
-        }
+        List<ServiceOrderDTO> filtered = orderList.stream()
+                .filter(o -> (o.getClient() != null && o.getClient().getName().toLowerCase().contains(query)) ||
+                             (o.getMaster() != null && o.getMaster().getName().toLowerCase().contains(query)))
+                .collect(Collectors.toList());
+        orderList.setAll(filtered);
     }
 
     @FXML
     public void addClient() {
-
         if (MainSession.role.equals("Master")) {
-
-            showError(
-                "Masters cannot add clients"
-            );
-
+            showError("Masters cannot add clients");
             return;
         }
 
-        TextInputDialog nameDialog =
-            new TextInputDialog();
-
+        TextInputDialog nameDialog = new TextInputDialog();
         nameDialog.setTitle("Add Client");
-
-        nameDialog.setHeaderText(
-            "Enter client name"
-        );
-
-        String name =
-            nameDialog.showAndWait().orElse("");
+        nameDialog.setHeaderText("Enter client name");
+        String name = nameDialog.showAndWait().orElse("");
 
         if (name.isBlank()) {
-
-            showError(
-                "Client name cannot be empty"
-            );
-
+            showError("Client name cannot be empty");
             return;
         }
 
-        TextInputDialog phoneDialog =
-            new TextInputDialog();
-
+        TextInputDialog phoneDialog = new TextInputDialog();
         phoneDialog.setTitle("Phone");
-
-        phoneDialog.setHeaderText(
-            "Enter phone number"
-        );
-
-        String phone =
-            phoneDialog.showAndWait().orElse("");
+        phoneDialog.setHeaderText("Enter phone number");
+        String phone = phoneDialog.showAndWait().orElse("");
 
         if (!phone.startsWith("+380")) {
-
-            showError(
-                "Phone must start with +380"
-            );
-
+            showError("Phone must start with +380");
             return;
         }
 
-        Client client = new Client();
+        ClientDTO clientDTO = ClientDTO.builder().name(name).phone(phone).build();
+        
+        Task<Void> saveTask = new Task<>() {
+            @Override
+            protected Void call() {
+                // 1. Save client
+                ClientDTO savedClient = clientService.saveClient(clientDTO);
+                
+                // 2. Automatically create an order with a default master (id=1) and a default service (id=1)
+                ServiceOrderDTO newOrder = new ServiceOrderDTO();
+                newOrder.setClient(savedClient);
+                com.onlineservise.dto.MasterDTO master = new com.onlineservise.dto.MasterDTO();
+                master.setId(1L);
+                newOrder.setMaster(master);
+                newOrder.setOrderDate(java.time.LocalDateTime.now());
+                newOrder.setStatus("Waiting");
+                
+                // Add default service to the order
+                com.onlineservise.dto.ServiceDTO service = new com.onlineservise.dto.ServiceDTO();
+                service.setId(1L);
+                service.setName("Electrical Repair");
+                newOrder.setServices(java.util.List.of(service));
+                
+                orderService.saveOrder(newOrder);
+                return null;
+            }
+        };
 
-        client.setName(name);
+        saveTask.setOnSucceeded(event -> {
+            statusLabel.setText("Client saved to database");
+            loadOrders();
+        });
 
-        client.setPhone(phone);
+        new Thread(saveTask).start();
+    }
 
-        clientRepository.save(client);
+    @FXML
+    public void deleteOrder() {
+        ServiceOrderDTO selected = ordersTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            showError("Select an order to delete");
+            return;
+        }
 
-        statusLabel.setText(
-            "Client saved to database"
-        );
+        if (MainSession.role.equals("Master")) {
+            showError("Masters cannot delete orders");
+            return;
+        }
 
-        loadClients();
+        Task<Void> deleteTask = new Task<>() {
+            @Override
+            protected Void call() {
+                orderService.deleteOrder(selected.getId());
+                return null;
+            }
+        };
+
+        deleteTask.setOnSucceeded(event -> {
+            orderList.remove(selected);
+            statusLabel.setText("Order deleted");
+        });
+
+        new Thread(deleteTask).start();
+    }
+
+    @FXML
+    public void openClientsView() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/ClientView.fxml"));
+            Stage stage = new Stage();
+            stage.setTitle("Client List");
+            stage.setScene(new Scene(loader.load()));
+            stage.show();
+        } catch (Exception e) {
+            showError("Could not open client list: " + e.getMessage());
+        }
     }
 
     private void showError(String text) {
-
-        Alert alert =
-            new Alert(Alert.AlertType.ERROR);
-
-        alert.setTitle("Access Error");
-
-        alert.setHeaderText(null);
-
-        alert.setContentText(text);
-
-        alert.showAndWait();
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText(text);
+            alert.showAndWait();
+        });
     }
 }

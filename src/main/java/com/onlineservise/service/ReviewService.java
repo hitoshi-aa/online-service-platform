@@ -1,10 +1,12 @@
 package com.onlineservise.service;
 
-import com.onlineservise.entity.Review;
-
+import com.onlineservise.dto.ReviewDTO;
 import java.util.List;
 
 public interface ReviewService {
-
-    List<Review> getAllReviews();
+    List<ReviewDTO> getAllReviews();
+    ReviewDTO getReviewById(Long id);
+    ReviewDTO saveReview(ReviewDTO reviewDTO);
+    void updateReview(ReviewDTO reviewDTO);
+    void deleteReview(Long id);
 }

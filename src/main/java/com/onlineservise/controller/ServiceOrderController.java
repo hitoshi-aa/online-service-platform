@@ -1,22 +1,42 @@
 package com.onlineservise.controller;
 
-import com.onlineservise.entity.ServiceOrder;
-import com.onlineservise.repository.ServiceOrderRepository;
+import com.onlineservise.dto.ServiceOrderDTO;
+import com.onlineservise.service.ServiceOrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/orders")
+@RequestMapping("/api/orders")
 @RequiredArgsConstructor
 public class ServiceOrderController {
 
-    private final ServiceOrderRepository repository;
+    private final ServiceOrderService orderService;
 
     @GetMapping
-    public List<ServiceOrder> getAllOrders() {
+    public List<ServiceOrderDTO> getAllOrders() {
+        return orderService.getAllOrders();
+    }
 
-        return repository.findAll();
+    @GetMapping("/{id}")
+    public ServiceOrderDTO getOrderById(@PathVariable Long id) {
+        return orderService.getOrderById(id);
+    }
+
+    @PostMapping
+    public ServiceOrderDTO createOrder(@RequestBody ServiceOrderDTO orderDTO) {
+        return orderService.saveOrder(orderDTO);
+    }
+
+    @PutMapping("/{id}")
+    public void updateOrder(@PathVariable Long id, @RequestBody ServiceOrderDTO orderDTO) {
+        orderDTO.setId(id);
+        orderService.updateOrder(orderDTO);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteOrder(@PathVariable Long id) {
+        orderService.deleteOrder(id);
     }
 }

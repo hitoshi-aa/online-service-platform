@@ -1,13 +1,14 @@
 package com.onlineservise.ui;
 
+import com.onlineservise.dto.MasterDTO;
+import com.onlineservise.service.MasterService;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 public class LoginController {
@@ -21,206 +22,97 @@ public class LoginController {
     @FXML
     private PasswordField passwordField;
 
+    private MasterService masterService;
+
     @FXML
     public void initialize() {
-
-        System.out.println(
-            "========== BCrypt HASHES =========="
-        );
-
-        System.out.println(
-            "manager -> "
-                +
-                "$2a$10$N9qo8uLOickgx2ZMRZo5i.ejZAg/P6MqxsVXni4eWh05rq6ArlT2K"
-        );
-
-        System.out.println(
-            "andrii123 -> "
-                +
-                "$2a$10$HXL9DyXN6CB5NzkWptJX1eW7vrLRpO11eQ8sC2cv2U5qL6tKDFmsG"
-        );
-
-        System.out.println(
-            "dmytro123 -> "
-                +
-                "$2a$10$Um39LW0WRw3ctgMo4/00lux1NqvQZ10CtcVAnBGMee0lyre1Pbq8G"
-        );
-
-        System.out.println(
-            "ivan123 -> "
-                +
-                "$2a$10$qbiJZ/zN/wJaxbmE5puq2.brgZvklJ/DGvhJLh5knbQzkWCGLjGiqS"
-        );
-
-        System.out.println(
-            "olena123 -> "
-                +
-                "$2a$10$AtlgbIAMssTe0vigLUnJPum1N3v6yDzDXUFPXD.BbgUW4tDn7aqaO"
-        );
-
-        System.out.println(
-            "=================================="
-        );
-
+        masterService = SpringContext.getContext().getBean(MasterService.class);
+        
         roleBox.setItems(
-
             FXCollections.observableArrayList(
                 "Manager",
                 "Master"
             )
         );
-
         roleBox.setValue("Manager");
     }
 
     @FXML
-    public void login() throws Exception {
+    public void login() {
+        String role = roleBox.getValue();
+        String login = nameField.getText().trim();
+        String password = passwordField.getText().trim();
 
-        String role =
-            roleBox.getValue();
-
-        String login =
-            nameField.getText()
-                .trim()
-                .toLowerCase();
-
-        String password =
-            passwordField.getText()
-                .trim();
-
-        if (
-            role.equals("Manager")
-                &&
-                login.equals("manager")
-                &&
-                password.equals("admin123")
-        ) {
-
-            MainSession.username =
-                "Manager";
-
-            MainSession.role =
-                "Manager";
-
-            openMainView();
-
+        if (login.isEmpty() || password.isEmpty()) {
+            showError("Fields cannot be empty");
             return;
         }
 
-        if (
-            role.equals("Master")
-        ) {
-
-            if (
-                login.equals("andrii")
-                    &&
-                    password.equals("andrii123")
-            ) {
-
-                MainSession.username =
-                    "Andrii Kovalenko";
-
-                MainSession.role =
-                    "Master";
-
-                openMainView();
-
-                return;
+        Task<Boolean> loginTask = new Task<>() {
+            @Override
+            protected Boolean call() throws Exception {
+                System.out.println("[DEBUG] Attempting login for role: " + role + ", login: " + login);
+                if (role.equals("Manager")) {
+                    boolean isManager = login.equals("manager") && password.equals("admin123");
+                    System.out.println("[DEBUG] Manager auth result: " + isManager);
+                    return isManager;
+                } else {
+                    boolean isAuthenticated = masterService.authenticate(login, password);
+                    System.out.println("[DEBUG] Master auth result for " + login + ": " + isAuthenticated);
+                    if (!isAuthenticated) {
+                        MasterDTO master = masterService.getMasterByLogin(login);
+                        if (master == null) {
+                            System.out.println("[DEBUG] Master with login '" + login + "' NOT FOUND in DB");
+                        } else {
+                            System.out.println("[DEBUG] Master FOUND in DB: " + master.getName() + " (ID: " + master.getId() + ")");
+                        }
+                    }
+                    return isAuthenticated;
+                }
             }
+        };
 
-            if (
-                login.equals("dmytro")
-                    &&
-                    password.equals("dmytro123")
-            ) {
-
-                MainSession.username =
-                    "Dmytro Hrytsenko";
-
-                MainSession.role =
-                    "Master";
-
-                openMainView();
-
-                return;
+        loginTask.setOnSucceeded(event -> {
+            if (loginTask.getValue()) {
+                if (role.equals("Manager")) {
+                    MainSession.username = "Manager";
+                    MainSession.role = "Manager";
+                } else {
+                    MasterDTO master = masterService.getMasterByLogin(login);
+                    MainSession.username = master.getName();
+                    MainSession.role = "Master";
+                }
+                try {
+                    openMainView();
+                } catch (Exception e) {
+                    showError("Error opening main view: " + e.getMessage());
+                }
+            } else {
+                showError("Wrong credentials");
             }
+        });
 
-            if (
-                login.equals("ivan")
-                    &&
-                    password.equals("ivan123")
-            ) {
+        loginTask.setOnFailed(event -> {
+            showError("Login failed: " + loginTask.getException().getMessage());
+        });
 
-                MainSession.username =
-                    "Ivan Melnyk";
-
-                MainSession.role =
-                    "Master";
-
-                openMainView();
-
-                return;
-            }
-
-            if (
-                login.equals("olena")
-                    &&
-                    password.equals("olena123")
-            ) {
-
-                MainSession.username =
-                    "Olena Bondar";
-
-                MainSession.role =
-                    "Master";
-
-                openMainView();
-
-                return;
-            }
-        }
-
-        showError(
-            "Wrong credentials"
-        );
+        new Thread(loginTask).start();
     }
 
     private void openMainView() throws Exception {
-
-        FXMLLoader loader =
-            new FXMLLoader(
-                getClass().getResource(
-                    "/ui/MainView.fxml"
-                )
-            );
-
-        Scene scene =
-            new Scene(
-                loader.load(),
-                1100,
-                600
-            );
-
-        Stage stage =
-            (Stage)
-                roleBox
-                    .getScene()
-                    .getWindow();
-
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/MainView.fxml"));
+        Scene scene = new Scene(loader.load(), 1100, 600);
+        Stage stage = (Stage) roleBox.getScene().getWindow();
         stage.setScene(scene);
     }
 
     private void showError(String text) {
-
-        Alert alert =
-            new Alert(Alert.AlertType.ERROR);
-
-        alert.setTitle("Login Error");
-
-        alert.setHeaderText(null);
-
-        alert.setContentText(text);
-
-        alert.showAndWait();
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Login Error");
+            alert.setHeaderText(null);
+            alert.setContentText(text);
+            alert.showAndWait();
+        });
     }
 }

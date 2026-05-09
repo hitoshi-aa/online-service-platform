@@ -1,9 +1,14 @@
 package com.onlineservise.repository;
 
 import com.onlineservise.entity.Client;
-import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.List;
+import java.util.Optional;
 
-public interface ClientRepository
-        extends JpaRepository<Client, Long> {
-
+public interface ClientRepository {
+    List<Client> findAll();
+    Optional<Client> findById(Long id);
+    List<Client> findByNameContaining(String name);
+    Client save(Client client);
+    void update(Client client);
+    void deleteById(Long id);
 }

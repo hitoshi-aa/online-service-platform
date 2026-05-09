@@ -6,13 +6,13 @@ import org.springframework.context.ConfigurableApplicationContext;
 
 public class SpringContext {
 
-    private static final ConfigurableApplicationContext context =
-            new SpringApplicationBuilder(
-                    ServicePlatformApplication.class
-            ).run();
+    private static ConfigurableApplicationContext context;
 
-    public static ConfigurableApplicationContext getContext() {
-
+    public static synchronized ConfigurableApplicationContext getContext() {
+        if (context == null) {
+            context = new SpringApplicationBuilder(ServicePlatformApplication.class)
+                    .run();
+        }
         return context;
     }
 }

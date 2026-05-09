@@ -4,56 +4,38 @@
 <?import javafx.scene.layout.*?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.onlineservise.ui.MainController">
+            fx:controller="com.onlineservise.ui.MainController"
+            stylesheets="@style.css">
 
     <top>
-        <HBox spacing="10" style="-fx-padding: 10;">
-
-            <Button text="Load Clients"
-                    onAction="#loadClients"/>
-
-            <Button text="Add Client"
-                    onAction="#addClient"/>
-
-            <Label fx:id="statusLabel"
-                   text="Ready"/>
-        </HBox>
+        <VBox spacing="5" style="-fx-padding: 10;">
+            <HBox spacing="10">
+                <Button text="Load Orders" onAction="#loadOrders"/>
+                <Button text="Add Client" onAction="#addClient"/>
+                <Button text="Delete Order" onAction="#deleteOrder"/>
+                <Button text="View Clients" onAction="#openClientsView"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="statusLabel" text="Ready"/>
+            </HBox>
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label text="Search:"/>
+                <TextField fx:id="searchField" onKeyReleased="#searchOrders" promptText="Client or Master name..."/>
+                <Button text="Clear" onAction="#loadOrders"/>
+            </HBox>
+        </VBox>
     </top>
 
     <center>
-
         <TableView fx:id="ordersTable">
-
             <columns>
-
-                <TableColumn fx:id="idColumn"
-                             text="ID"
-                             prefWidth="60"/>
-
-                <TableColumn fx:id="clientColumn"
-                             text="Client"
-                             prefWidth="180"/>
-
-                <TableColumn fx:id="phoneColumn"
-                             text="Phone"
-                             prefWidth="160"/>
-
-                <TableColumn fx:id="serviceColumn"
-                             text="Service"
-                             prefWidth="220"/>
-
-                <TableColumn fx:id="masterColumn"
-                             text="Master"
-                             prefWidth="180"/>
-
-                <TableColumn fx:id="statusColumn"
-                             text="Status"
-                             prefWidth="140"/>
-
+                <TableColumn fx:id="idColumn" text="ID" prefWidth="60"/>
+                <TableColumn fx:id="clientColumn" text="Client" prefWidth="180"/>
+                <TableColumn fx:id="phoneColumn" text="Phone" prefWidth="160"/>
+                <TableColumn fx:id="serviceColumn" text="Services" prefWidth="300"/>
+                <TableColumn fx:id="masterColumn" text="Master" prefWidth="180"/>
+                <TableColumn fx:id="statusColumn" text="Status" prefWidth="120"/>
             </columns>
-
         </TableView>
-
     </center>
 
 </BorderPane>
