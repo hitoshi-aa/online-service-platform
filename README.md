@@ -1,56 +1,61 @@
-# 🛠 Online Ordering and Service Performance Control Platform
+# 🛠 Платформа для онлайн-замовлення та контролю виконання сервісних послуг
 
 [![Java Version](https://img.shields.io/badge/Java-21-blue.svg)](https://www.oracle.com/java/technologies/javase/jdk21-archive-downloads.html)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2.5-brightgreen.svg)](https://spring.io/projects/spring-boot)
 [![Build Status](https://github.com/YOUR_USERNAME/YOUR_REPO_NAME/actions/workflows/build.yml/badge.svg)](https://github.com/YOUR_USERNAME/YOUR_REPO_NAME/actions)
 
-A comprehensive solution for automating service ordering processes and monitoring performance in real-time.
+Комплексне рішення для автоматизації процесів замовлення сервісних послуг та моніторингу їх виконання в режимі реального часу. Поєднує потужність **Spring Boot** на бекенді та інтерактивність **JavaFX** на фронтенді.
 
 ---
 
-## 🌟 Key Features
+## 🌟 Основні можливості
 
-- 🛍 **Online Ordering:** User-friendly interface for selecting services and submitting requests.
-- 📉 **Performance Control:** Real-time tracking of order statuses (Waiting -> In Progress -> Completed).
-- 👥 **Role-Based Access:** 
-  - **Manager:** Client management, master assignment, and overall order oversight.
-  - **Master:** View assigned tasks and update execution statuses.
-- 💾 **Reliable Data Storage:** JDBC integration with HikariCP connection pooling.
-- 🔄 **Automated Migrations:** Database version control powered by Flyway.
-- 🔐 **Security:** Secure authentication and password hashing using BCrypt.
-
----
-
-## 🏗 Architecture
-
-The project follows **Layered Architecture** principles:
-
-1.  **UI Layer (JavaFX):** Interactive graphical user interface.
-2.  **Controller Layer:** Request handling and UI interaction logic.
-3.  **Service Layer:** Business logic implementation.
-4.  **Repository Layer (JDBC):** Database interaction with MySQL.
-5.  **DTO Layer:** Decoupled data transfer between layers.
+- 🛍 **Онлайн-замовлення:** Зручний інтерфейс для вибору послуг та миттєвого оформлення заявок.
+- 📉 **Контроль виконання:** Відстеження статусів замовлень у реальному часі (`Waiting` -> `In Progress` -> `Completed`).
+- 👥 **Рольова модель доступу:** 
+  - **Менеджер:** Повний контроль над базою клієнтів, призначення майстрів на замовлення та управління каталогом послуг.
+  - **Майстер:** Особистий кабінет для перегляду призначених завдань та оновлення статусів їх виконання.
+- 💾 **Надійне збереження даних:** Пряма взаємодія з БД через JDBC з використанням пулу з'єднань **HikariCP**.
+- 🔄 **Версіонування бази даних:** Автоматичне керування схемою БД за допомогою **Flyway**.
+- 🔐 **Безпека:** Захищений вхід з шифруванням паролів за алгоритмом **BCrypt**.
 
 ---
 
-## 📥 Installation & Setup
+## 🏗 Архітектура
 
-### Prerequisites
-- **JDK 21**
-- **MySQL Server**
-- **Maven** (bundled with modern IDEs)
+Проєкт реалізований з використанням багатошарової архітектури (**Layered Architecture**):
 
-### Quick Start
-1. **Clone the repository:**
+1.  **UI Layer (JavaFX):** Графічний інтерфейс користувача (FXML + CSS).
+2.  **Controller Layer:** Обробка дій користувача та зв'язок між UI та бізнес-логікою.
+3.  **Service Layer:** Реалізація основної бізнес-логіки та правил системи.
+4.  **Repository Layer (JDBC):** Шар доступу до даних, оптимізований для роботи з MySQL.
+5.  **DTO Layer:** Об'єкти передачі даних для забезпечення незалежності шарів програми.
+
+---
+
+## 📥 Встановлення та налаштування
+
+### Вимоги
+- **JDK 21** (рекомендується GraalVM або OpenJDK)
+- **MySQL Server 8.0+**
+- **Maven** (вбудований у більшість сучасних IDE)
+
+### Швидкий старт
+1. **Клонуйте репозиторій:**
    ```bash
    git clone https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git
    cd YOUR_REPO_NAME
    ```
 
-2. **Database Configuration:**
-   Create a database named `mysuperproject` in MySQL and update the credentials in `src/main/resources/application.properties`.
+2. **Налаштуйте базу даних:**
+   - Створіть базу даних у MySQL:
+     ```sql
+     CREATE DATABASE mysuperproject;
+     ```
+   - Оновіть дані підключення (username/password) у файлі:
+     `src/main/resources/application.properties`
 
-3. **Run the Application:**
+3. **Запустіть додаток:**
    ```bash
    mvn clean package
    mvn javafx:run
@@ -58,28 +63,31 @@ The project follows **Layered Architecture** principles:
 
 ---
 
-## 📦 Creating Installers
+## 📦 Створення нативних інсталяторів
 
-The project supports automated generation of native installers (`.exe`, `.deb`, `.dmg`) via `jpackage`.
+Проєкт підтримує автоматичне створення інсталяторів для різних ОС за допомогою `jpackage`.
 
-- **Windows:** `.\packaging\create-installer-win.ps1`
-- **Linux/macOS:** `./packaging/create-installer-unix.sh`
+- **Windows:** запустіть `.\packaging\create-installer-win.ps1` (створить `.exe`).
+- **Linux/macOS:** запустіть `./packaging/create-installer-unix.sh` (створить `.deb`, `.rpm` або `.dmg`).
 
----
-
-## 🛤 Roadmap
-
-- [x] Basic infrastructure and DB setup
-- [x] Authentication and roles
-- [x] Order management system
-- [ ] Review and rating system
-- [ ] PDF report generation
-- [ ] Automated client notifications
+*Для Windows потрібен встановлений [WiX Toolset](https://wixtoolset.org/releases/).*
 
 ---
 
-## 👨‍💻 Author
-[Your Name or Nickname]
+## 🛤 План розвитку (Roadmap)
+
+- [x] Розробка ядра системи та схеми БД
+- [x] Система авторизації та розподіл ролей
+- [x] Функціонал створення та видалення замовлень
+- [x] Автоматизація збірки (GitHub Actions)
+- [ ] Система відгуків та клієнтських рейтингів
+- [ ] Генерація звітів про виконані роботи у форматі PDF
+- [ ] Темна тема для інтерфейсу JavaFX
+
+---
+
+## 👨‍💻 Автор
+[Ваше ім'я або нікнейм]
 
 ---
 *Generated with ❤️ by Gemini CLI*
