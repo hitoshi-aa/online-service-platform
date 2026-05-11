@@ -1,56 +1,56 @@
-# 🛠 Платформа для онлайн-замовлення та контролю виконання сервісних послуг
+# 🛠 Online Ordering and Service Performance Control Platform
 
 [![Java Version](https://img.shields.io/badge/Java-21-blue.svg)](https://www.oracle.com/java/technologies/javase/jdk21-archive-downloads.html)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2.5-brightgreen.svg)](https://spring.io/projects/spring-boot)
 [![Build Status](https://github.com/YOUR_USERNAME/YOUR_REPO_NAME/actions/workflows/build.yml/badge.svg)](https://github.com/YOUR_USERNAME/YOUR_REPO_NAME/actions)
 
-Комплексне рішення для автоматизації процесів замовлення сервісних послуг та моніторингу їх виконання в режимі реального часу.
+A comprehensive solution for automating service ordering processes and monitoring performance in real-time.
 
 ---
 
-## 🌟 Основні можливості
+## 🌟 Key Features
 
-- 🛍 **Онлайн-замовлення:** Зручний інтерфейс для вибору послуг та оформлення заявок.
-- 📉 **Контроль виконання:** Відстеження статусів замовлень (Waiting -> In Progress -> Completed).
-- 👥 **Рольова модель:** 
-  - **Менеджер:** Управління клієнтами, призначення майстрів, контроль за всіма замовленнями.
-  - **Майстер:** Перегляд призначених робіт, зміна статусів виконання.
-- 💾 **Надійне збереження даних:** Використання JDBC з пулом з'єднань HikariCP.
-- 🔄 **Автоматичні міграції:** Контроль версій бази даних за допомогою Flyway.
-- 🔐 **Безпека:** Захищений вхід та шифрування паролів.
-
----
-
-## 🏗 Архітектура
-
-Проєкт побудований за принципами **Layered Architecture** (Багатошарова архітектура):
-
-1.  **UI Layer (JavaFX):** Інтерактивний графічний інтерфейс.
-2.  **Controller Layer:** Обробка запитів та логіка взаємодії з UI.
-3.  **Service Layer:** Бізнес-логіка програми.
-4.  **Repository Layer (JDBC):** Взаємодія з базою даних MySQL.
-5.  **DTO Layer:** Обмін даними між шарами без прив'язки до сутностей БД.
+- 🛍 **Online Ordering:** User-friendly interface for selecting services and submitting requests.
+- 📉 **Performance Control:** Real-time tracking of order statuses (Waiting -> In Progress -> Completed).
+- 👥 **Role-Based Access:** 
+  - **Manager:** Client management, master assignment, and overall order oversight.
+  - **Master:** View assigned tasks and update execution statuses.
+- 💾 **Reliable Data Storage:** JDBC integration with HikariCP connection pooling.
+- 🔄 **Automated Migrations:** Database version control powered by Flyway.
+- 🔐 **Security:** Secure authentication and password hashing using BCrypt.
 
 ---
 
-## 📥 Встановлення та запуск
+## 🏗 Architecture
 
-### Вимоги
+The project follows **Layered Architecture** principles:
+
+1.  **UI Layer (JavaFX):** Interactive graphical user interface.
+2.  **Controller Layer:** Request handling and UI interaction logic.
+3.  **Service Layer:** Business logic implementation.
+4.  **Repository Layer (JDBC):** Database interaction with MySQL.
+5.  **DTO Layer:** Decoupled data transfer between layers.
+
+---
+
+## 📥 Installation & Setup
+
+### Prerequisites
 - **JDK 21**
 - **MySQL Server**
-- **Maven** (входить до складу сучасних IDE)
+- **Maven** (bundled with modern IDEs)
 
-### Швидкий старт
-1. **Клонуйте репозиторій:**
+### Quick Start
+1. **Clone the repository:**
    ```bash
    git clone https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git
    cd YOUR_REPO_NAME
    ```
 
-2. **Налаштуйте базу даних:**
-   Створіть БД `mysuperproject` у вашому MySQL та оновіть пароль у файлі `src/main/resources/application.properties`.
+2. **Database Configuration:**
+   Create a database named `mysuperproject` in MySQL and update the credentials in `src/main/resources/application.properties`.
 
-3. **Запустіть додаток:**
+3. **Run the Application:**
    ```bash
    mvn clean package
    mvn javafx:run
@@ -58,9 +58,9 @@
 
 ---
 
-## 📦 Створення інсталяторів
+## 📦 Creating Installers
 
-Проєкт підтримує автоматичне створення нативних інсталяторів (`.exe`, `.deb`, `.dmg`) за допомогою `jpackage`.
+The project supports automated generation of native installers (`.exe`, `.deb`, `.dmg`) via `jpackage`.
 
 - **Windows:** `.\packaging\create-installer-win.ps1`
 - **Linux/macOS:** `./packaging/create-installer-unix.sh`
@@ -69,17 +69,17 @@
 
 ## 🛤 Roadmap
 
-- [x] Основна інфраструктура та БД
-- [x] Авторизація та ролі
-- [x] Управління замовленнями
-- [ ] Система відгуків та рейтингів
-- [ ] Генерація звітів у PDF
-- [ ] Автоматичні сповіщення клієнтів
+- [x] Basic infrastructure and DB setup
+- [x] Authentication and roles
+- [x] Order management system
+- [ ] Review and rating system
+- [ ] PDF report generation
+- [ ] Automated client notifications
 
 ---
 
-## 👨‍💻 Автор
-[Ваше ім'я або нікнейм]
+## 👨‍💻 Author
+[Your Name or Nickname]
 
 ---
 *Generated with ❤️ by Gemini CLI*

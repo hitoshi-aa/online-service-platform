@@ -22,7 +22,7 @@ public class JavaFxApplication extends Application {
             new Scene(loader.load(), 500, 350);
 
         stage.setTitle(
-            "Платформа онлайн-замовлення сервісних послуг"
+            "Service Ordering & Performance Control Platform"
         );
 
         stage.setScene(scene);
