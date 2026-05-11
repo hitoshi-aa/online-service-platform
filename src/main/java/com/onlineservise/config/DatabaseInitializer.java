@@ -15,7 +15,7 @@ public class DatabaseInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        System.out.println("[DB-INIT] Перевірка стану бази даних...");
+        System.out.println("[DB-INIT] Checking database state...");
         try {
             jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS client (id BIGINT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(255), phone VARCHAR(255))");
             jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS master (id BIGINT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(255), specialization VARCHAR(255), login VARCHAR(50), password VARCHAR(255))");
@@ -25,7 +25,7 @@ public class DatabaseInitializer implements CommandLineRunner {
 
             Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM master", Integer.class);
             if (count == 0) {
-                System.out.println("[DB-INIT] Заповнення початкових даних...");
+                System.out.println("[DB-INIT] Seeding initial data...");
                 
                 String mSql = "INSERT INTO master (id, name, specialization, login, password) VALUES (?, ?, ?, ?, ?)";
                 jdbcTemplate.update(mSql, 1, "Andrii Kovalenko", "Computer Repair", "andrii", passwordEncoder.encode("andrii123"));
@@ -40,7 +40,7 @@ public class DatabaseInitializer implements CommandLineRunner {
                 jdbcTemplate.update("INSERT INTO service_order VALUES (1, NOW(), 1, 1, 'Completed'), (2, NOW(), 2, 2, 'In Progress'), (3, NOW(), 3, 3, 'Waiting'), (4, NOW(), 1, 4, 'Completed')");
                 jdbcTemplate.update("INSERT INTO order_services VALUES (1, 1), (1, 3), (2, 2), (3, 3), (4, 4)");
 
-                System.out.println("[DB-INIT] Базу заповнено.");
+                System.out.println("[DB-INIT] Database seeding completed.");
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -59,7 +59,7 @@ public class MainController {
         clientService = SpringContext.getContext().getBean(ClientService.class);
 
         int count = clientService.getAllClients().size();
-        System.out.println("[DEBUG] Кількість клієнтів у Java: " + count);
+        System.out.println("[DEBUG] Client count in Java: " + count);
 
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         
@@ -95,7 +95,7 @@ public class MainController {
         );
 
         ordersTable.setItems(orderList);
-        statusLabel.setText("Клієнтів знайдено: " + count);
+        statusLabel.setText("Clients found: " + count);
         
         loadOrders();
     }
