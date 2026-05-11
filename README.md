@@ -90,4 +90,4 @@
 hitoshi-aa
 
 ---
-*Generated with ❤️ by Gemini CLI*
+Проєкт створено для портфоліо та відточування навичок розробки на Java.
