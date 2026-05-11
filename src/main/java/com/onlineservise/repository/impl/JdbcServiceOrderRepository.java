@@ -55,16 +55,7 @@ public class JdbcServiceOrderRepository implements ServiceOrderRepository {
         String sql = "SELECT * FROM service_order";
         List<ServiceOrder> orders = jdbcTemplate.query(sql, orderRowMapper);
         for (ServiceOrder order : orders) {
-            // Fill related entities
-            order.setClient(jdbcTemplate.queryForObject("SELECT * FROM client WHERE id = ?", (rs, row) -> {
-                Client c = new Client(); c.setId(rs.getLong("id")); c.setName(rs.getString("name")); c.setPhone(rs.getString("phone")); return c;
-            }, order.getClient().getId()));
-            
-            order.setMaster(jdbcTemplate.queryForObject("SELECT * FROM master WHERE id = ?", (rs, row) -> {
-                Master m = new Master(); m.setId(rs.getLong("id")); m.setName(rs.getString("name")); m.setSpecialization(rs.getString("specialization")); return m;
-            }, order.getMaster().getId()));
-            
-            order.setServices(findServicesByOrderId(order.getId()));
+            fillRelatedEntities(order);
         }
         return orders;
     }
@@ -74,10 +65,33 @@ public class JdbcServiceOrderRepository implements ServiceOrderRepository {
         try {
             ServiceOrder order = jdbcTemplate.queryForObject("SELECT * FROM service_order WHERE id = ?", orderRowMapper, id);
             if (order != null) {
+                fillRelatedEntities(order);
                 order.setServices(findServicesByOrderId(order.getId()));
             }
             return Optional.ofNullable(order);
         } catch (EmptyResultDataAccessException e) { return Optional.empty(); }
+    }
+
+    private void fillRelatedEntities(ServiceOrder order) {
+        if (order.getClient() != null && order.getClient().getId() != null) {
+            order.setClient(jdbcTemplate.queryForObject("SELECT * FROM client WHERE id = ?", (rs, row) -> {
+                Client c = new Client();
+                c.setId(rs.getLong("id"));
+                c.setName(rs.getString("name"));
+                c.setPhone(rs.getString("phone"));
+                return c;
+            }, order.getClient().getId()));
+        }
+
+        if (order.getMaster() != null && order.getMaster().getId() != null) {
+            order.setMaster(jdbcTemplate.queryForObject("SELECT * FROM master WHERE id = ?", (rs, row) -> {
+                Master m = new Master();
+                m.setId(rs.getLong("id"));
+                m.setName(rs.getString("name"));
+                m.setSpecialization(rs.getString("specialization"));
+                return m;
+            }, order.getMaster().getId()));
+        }
     }
 
     private List<Service> findServicesByOrderId(Long orderId) {
