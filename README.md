@@ -2,7 +2,7 @@
 
 [![Java Version](https://img.shields.io/badge/Java-21-blue.svg)](https://www.oracle.com/java/technologies/javase/jdk21-archive-downloads.html)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2.5-brightgreen.svg)](https://spring.io/projects/spring-boot)
-[![Build Status](https://github.com/YOUR_USERNAME/YOUR_REPO_NAME/actions/workflows/build.yml/badge.svg)](https://github.com/YOUR_USERNAME/YOUR_REPO_NAME/actions)
+[![Build Status](https://github.com/hitoshi-aa/online-service-platform/actions/workflows/build.yml/badge.svg)](https://github.com/hitoshi-aa/online-service-platform/actions)
 
 Комплексне рішення для автоматизації процесів замовлення сервісних послуг та моніторингу їх виконання в режимі реального часу. Поєднує потужність **Spring Boot** на бекенді та інтерактивність **JavaFX** на фронтенді.
 
@@ -43,8 +43,8 @@
 ### Швидкий старт
 1. **Клонуйте репозиторій:**
    ```bash
-   git clone https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git
-   cd YOUR_REPO_NAME
+   git clone https://github.com/hitoshi-aa/online-service-platform.git
+   cd online-service-platform
    ```
 
 2. **Налаштуйте базу даних:**
@@ -87,7 +87,7 @@
 ---
 
 ## 👨‍💻 Автор
-[Ваше ім'я або нікнейм]
+hitoshi-aa
 
 ---
 *Generated with ❤️ by Gemini CLI*
